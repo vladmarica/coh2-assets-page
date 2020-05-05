@@ -1,4 +1,3 @@
-const withSass = require('@zeit/next-sass');
 
 const config = {
   env: {
@@ -6,8 +5,4 @@ const config = {
   },
 }
 
-module.exports = withSass(Object.assign({}, config, {
-  sassLoaderOptions: {
-    implementation: require('sass')
-  }
-}));
+module.exports = config;

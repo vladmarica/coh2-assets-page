@@ -1,7 +1,9 @@
-import React, { FunctionComponent, useState } from 'react';
+import React, { FunctionComponent, useState, useEffect } from 'react';
 import cn from 'classnames';
 
-const DEFAULT_ITEMS_PER_PAGE = 10;
+import s from './Table.module.scss';
+
+const DEFAULT_ITEMS_PER_PAGE = 12;
 
 interface TableProps {
   images: string[];
@@ -11,6 +13,11 @@ interface TableProps {
 const Table: FunctionComponent<TableProps> = (props) => {
   const { images, itemsPerPage } = props;
   const [currentPage, setCurrentPage] = useState(0);
+
+  useEffect(() => {
+    console.log('Resetting current page');
+    setCurrentPage(0);
+  }, [props.images]);
 
   const numPages = Math.ceil(props.images.length / props.itemsPerPage);
   const imagesInPage = images.slice(
@@ -25,20 +32,19 @@ const Table: FunctionComponent<TableProps> = (props) => {
             onClick={() => setCurrentPage(currentPage - 1)}>Prev</button>
         </li>
         <li className='page-item'>
-          <span>Page {currentPage + 1}/{numPages}</span>
+          <span>Page {currentPage + 1}/{Math.max(numPages, 1)}</span>
         </li>
         <li className='page-item'>
-          <button className={cn('btn btn-primary', { disabled: currentPage === numPages - 1 })}
+          <button className={cn('btn btn-primary', { disabled: currentPage >= numPages - 1 })}
             onClick={() => setCurrentPage(currentPage + 1)}>Next</button>
         </li>
       </ul>
-      <div>
+      <div className={s['table-container']}>
         {imagesInPage.map(imageName => (
-         <>
-          <b>{imageName}</b> <br />
+         <div className={s.element} key={imageName}>
+          <b>{imageName}</b>
           <img src={`/${imageName}`} />
-          <br /><br/>
-         </> 
+         </div> 
         ))}
       </div>
     </>

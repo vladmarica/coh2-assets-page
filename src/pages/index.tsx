@@ -1,4 +1,4 @@
-import React, { FunctionComponent } from 'react';
+import React, { FunctionComponent, useState } from 'react';
 import { GetStaticProps } from 'next';
 import fs from 'fs';
 
@@ -8,15 +8,26 @@ interface IndexProps {
   imageNames: string[];
 }
 
-const IndexPage: FunctionComponent<IndexProps> = (props) => (
-  <div>
-    <h2>Company of Heroes 2 Assets</h2>
-    <p>{props.imageNames.length} assets</p>
+const IndexPage: FunctionComponent<IndexProps> = (props) => { 
+  const [filterText, setFilterText] = useState<string>();
 
-    <Table images={props.imageNames} />
+  let filteredNames = props.imageNames;
+  if (filterText) {
+    filteredNames = filteredNames.filter(name => name.toLowerCase().includes(filterText));
+  }
 
-  </div>
-);
+  return (
+    <div>
+      <h2>Company of Heroes 2 Assets</h2>
+      <input type='text' placeholder='Search...'
+        onChange={(event) => setFilterText(event.target.value.toLowerCase())} />
+     
+      <br />
+      <p>Showing {filteredNames.length}/{props.imageNames.length} assets</p>
+      <Table images={filteredNames} />
+    </div>
+  );
+};
 
 export default IndexPage;
 
